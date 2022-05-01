@@ -3,6 +3,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        showmap {
+            storeFile file('C:\\Users\\Administrator.SUNRIVER\\.android\\showmap.jks')
+            storePassword '1234567890'
+            keyAlias 'showmap'
+            keyPassword '1234567890'
+        }
+    }
     compileSdk 32
 
     defaultConfig {

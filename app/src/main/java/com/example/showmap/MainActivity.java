@@ -1,5 +1,6 @@
 package com.example.showmap;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.core.app.ActivityCompat;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -31,6 +34,7 @@ import com.amap.api.navi.AMapNaviView;
 import com.amap.api.navi.model.NaviLatLng;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.core.ServiceSettings;
 import com.amap.api.services.route.BusRouteResult;
 import com.amap.api.services.route.DriveRouteResult;
 import com.amap.api.services.route.RideRouteResult;
@@ -69,9 +73,7 @@ public class MainActivity extends Activity implements LocationSource, AMapLocati
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //权限
-        Context context = getApplicationContext();
-        MapsInitializer.updatePrivacyShow(context, true, true);
-        MapsInitializer.updatePrivacyAgree(context, true);
+        RequestPermission();
         //创建地图
         mMapView = (MapView) findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
@@ -81,7 +83,7 @@ public class MainActivity extends Activity implements LocationSource, AMapLocati
         naviView.onCreate(savedInstanceState);
         AMapNavi mapNavi = null;
         try {
-            mapNavi = AMapNavi.getInstance(context);
+            mapNavi = AMapNavi.getInstance(getApplicationContext());
         } catch (com.amap.api.maps.AMapException e) {
             e.printStackTrace();
         }
@@ -91,6 +93,29 @@ public class MainActivity extends Activity implements LocationSource, AMapLocati
         InitLocation();
         //初始化标志
         InitMarker();
+    }
+
+    public void RequestPermission(){
+        Context context = getApplicationContext();
+        //基础权限
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.INTERNET,
+                Manifest.permission.ACCESS_NETWORK_STATE,
+                Manifest.permission.ACCESS_WIFI_STATE,
+                Manifest.permission.CHANGE_WIFI_STATE,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+
+        }, 0);
+        //高德权限
+        MapsInitializer.updatePrivacyShow(context, true, true);
+        MapsInitializer.updatePrivacyAgree(context, true);
+
+        ServiceSettings.updatePrivacyShow(context,true,true);
+        ServiceSettings.updatePrivacyAgree(context,true);
     }
 
     public void InitLocation() {
